@@ -1,0 +1,29 @@
+## Contexto del proyecto
+Mi proyecto es una pagina de una ferreteria donde se muestren sus productos disponibles, basicamente una tienda virtual, donde la ferreteria tiene su pagina de bienvenida y muestra sus productos.
+
+El usuario puede navegar por la pagina y ver los productos disponibles.
+
+El administrador de la pagina puede agregar, editar y eliminar productos de la pagina.
+
+## Tech Stack
+- Front-end: HTML, CSS, JavaScript
+- Back-end: Node.js, Express.js, sqlite3
+
+## Estructura del proyecto
+
+- `backend/`: Contiene el codigo back-end de la aplicacion. Se encarga de la logica de negocio y de la base de datos.
+- `frontend/`: Contiene el codigo front-end de la aplicacion. Se encarga de la interfaz de usuario y de la logica de presentacion.
+
+Esta es la estructura general de mi proyecto:
+ferreteria-app/
+├── backend/
+│   ├── package.json
+│   ├── routes/
+│   │   └── productRoutes.js
+│   ├── models/
+│   │   └── index.js
+│   └── middleware/
+│       # Middleware files would be located here
+└── frontend/
+    ├── index.html
+    └── app.js

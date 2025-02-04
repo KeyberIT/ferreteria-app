@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferretería App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="login-section">
+        <div class="login-container">
+            <form id="login-form">
+                <h2>Iniciar Sesión</h2>
+                <div class="login-type">
+                    <label>
+                        <input type="radio" name="login-type" value="user" checked> Usuario
+                    </label>
+                    <label>
+                        <input type="radio" name="login-type" value="admin"> Administrador
+                    </label>
+                </div>
+                <input type="text" id="login-username" placeholder="Nombre de usuario" required>
+                <input type="password" id="login-password" placeholder="Contraseña" required>
+                <button type="submit">Iniciar Sesión</button>
+                <p>¿No tienes cuenta? <a href="#" id="show-register">Regístrate</a></p>
+            </form>
+
+            <form id="register-form" style="display: none;">
+                <h2>Registrarse</h2>
+                <input type="hidden" name="register-type" value="user">
+                <input type="text" id="register-username" placeholder="Nombre de usuario" required>
+                <input type="password" id="register-password" placeholder="Contraseña" required>
+                <button type="submit">Registrarse</button>
+                <p>¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-section" style="display: none;">
+        <header>
+            <h1>Ferretería App</h1>
+            <button id="logout-btn">Cerrar Sesión</button>
+        </header>
+
+        <div id="product-list">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+
+        <div id="admin-dashboard" style="display: none;">
+            <h2>Panel de Administración</h2>
+            <form id="product-form">
+                <h3>Agregar/Editar Producto</h3>
+                <input type="text" id="product-name" placeholder="Nombre del producto" required>
+                <input type="text" id="product-description" placeholder="Descripción" required>
+                <input type="number" id="product-price" placeholder="Precio" step="0.01" required>
+                <input type="number" id="product-stock" placeholder="Stock" required>
+                <input type="text" id="product-category" placeholder="Categoría" required>
+                <button type="submit">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
