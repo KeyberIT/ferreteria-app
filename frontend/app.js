@@ -160,22 +160,31 @@ async function loadProducts(role = null) {
         }
 
         const products = await response.json();
-        productList.innerHTML = '';
-        products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.classList.add('product-card');
-            productCard.innerHTML = `
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
-                <p>Price: $${product.price}</p>
-                <p>Stock: ${product.stock}</p>
-                ${role === 'admin' ? `
-                    <button onclick="editProduct(${product.id})">Edit</button>
-                    <button onclick="deleteProduct(${product.id})">Delete</button>
-                ` : ''}
-            `;
-            productList.appendChild(productCard);
-        });
+        productList.innerHTML = `
+            <div class="product-grid">
+                ${products.map(product => `
+                    <div class="product-card">
+                        <div class="product-image-placeholder">
+                            <img src="${product.imageUrl || 'default-product-image.png'}" alt="${product.name}">
+                        </div>
+                        <div class="product-details">
+                            <h3>${product.name}</h3>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-meta">
+                                <span class="product-price">Precio: $${product.price.toFixed(2)}</span>
+                                <span class="product-stock">Stock: ${product.stock}</span>
+                            </div>
+                            ${role === 'admin' ? `
+                                <div class="product-actions">
+                                    <button onclick="editProduct(${product.id})">Editar</button>
+                                    <button onclick="deleteProduct(${product.id})">Eliminar</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
 
         // Mostrar u ocultar el botón de cancelar según el estado de edición
         cancelEditBtn.style.display = isEditing ? 'block' : 'none';
