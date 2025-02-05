@@ -167,9 +167,6 @@ function renderProductCard(product, isAdmin = false) {
     const card = document.createElement('div');
     card.classList.add('product-card');
     card.innerHTML = `
-        <div class="product-image-container">
-            <img src="${product.image || 'placeholder.jpg'}" alt="${product.name}" class="product-image">
-        </div>
         <div class="product-details">
             <div class="product-name">${product.name}</div>
             <div class="product-price">$${product.price.toFixed(2)}</div>
@@ -180,7 +177,7 @@ function renderProductCard(product, isAdmin = false) {
                 <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
                 <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
             ` : `
-                <button class="btn-add-to-cart" onclick="addToCart(${product.id})">Agregar al Carrito</button>
+                
             `}
         </div>
     `;

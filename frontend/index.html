@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería App</title>
+    <title>Ferretería Online</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="login-section">
+    <div id="login-section" class="section">
         <div class="login-container">
-            <form id="login-form">
+            <form id="login-form" class="auth-form">
                 <h2>Iniciar Sesión</h2>
                 <div class="login-type">
                     <label>
@@ -19,47 +21,74 @@
                         <input type="radio" name="login-type" value="admin"> Administrador
                     </label>
                 </div>
-                <input type="text" id="login-username" placeholder="Nombre de usuario" required>
-                <input type="password" id="login-password" placeholder="Contraseña" required>
-                <button type="submit">Iniciar Sesión</button>
-                <p>¿No tienes cuenta? <a href="#" id="show-register">Regístrate</a></p>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="login-username" placeholder="Nombre de usuario" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                <p>¿No tienes cuenta? <a href="#" id="show-register" class="link">Regístrate</a></p>
             </form>
 
-            <form id="register-form" style="display: none;">
+            <form id="register-form" class="auth-form" style="display: none;">
                 <h2>Registrarse</h2>
                 <input type="hidden" name="register-type" value="user">
-                <input type="text" id="register-username" placeholder="Nombre de usuario" required>
-                <input type="password" id="register-password" placeholder="Contraseña" required>
-                <button type="submit">Registrarse</button>
-                <p>¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a></p>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="register-username" placeholder="Nombre de usuario" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="register-password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+                <p>¿Ya tienes cuenta? <a href="#" id="show-login" class="link">Iniciar Sesión</a></p>
             </form>
         </div>
     </div>
 
-    <div id="main-section" style="display: none;">
+    <div id="main-section" class="section" style="display: none;">
         <header>
-            <h1>Ferretería App</h1>
-            <button id="logout-btn">Cerrar Sesión</button>
+            <div class="header-content">
+                <h1><i class="fas fa-tools"></i> Ferretería Online</h1>
+                <button id="logout-btn" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+            </div>
         </header>
 
-        <div id="product-list">
-            <!-- Products will be dynamically loaded here -->
-        </div>
+        <main>
+            <div id="product-list" class="product-grid">
+                <!-- Products will be dynamically loaded here -->
+            </div>
 
-        <div id="admin-dashboard" style="display: none;">
-            <h2>Panel de Administración</h2>
-            <form id="product-form">
-                <h3>Agregar/Editar Producto</h3>
-                <input type="text" id="product-name" placeholder="Nombre del producto" required>
-                <input type="text" id="product-description" placeholder="Descripción" required>
-                <input type="number" id="product-price" placeholder="Precio" step="0.01" required>
-                <input type="number" id="product-stock" placeholder="Stock" required>
-                <input type="text" id="product-category" placeholder="Categoría" required>
-                <button type="submit">Guardar Producto</button>
-            </form>
-        </div>
+            <div id="admin-dashboard" class="admin-panel" style="display: none;">
+                <h2>Panel de Administración</h2>
+                <form id="product-form" class="product-form">
+                    <h3>Agregar/Editar Producto</h3>
+                    <div class="input-group">
+                        <input type="text" id="product-name" placeholder="Nombre del producto" required>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="product-description" placeholder="Descripción" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="product-price" placeholder="Precio" step="0.01" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="product-stock" placeholder="Stock" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="product-category" placeholder="Categoría" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                </form>
+            </div>
+        </main>
     </div>
 
     <script src="app.js"></script>
 </body>
 </html>
+
