@@ -166,19 +166,29 @@ async function loadProducts(role = null) {
 function renderProductCard(product, isAdmin = false) {
     const card = document.createElement('div');
     card.classList.add('product-card');
+    
+    // URL base para las imágenes
+    const baseUrl = 'http://localhost:3000'; // Ajusta esto según tu configuración
+    const defaultImageUrl = '/default-product.jpg'; // Imagen por defecto
+    
     card.innerHTML = `
+        <div class="product-image">
+            <img src="${product.imageUrl ? baseUrl + product.imageUrl : defaultImageUrl}" 
+                 alt="${product.name}"
+                 onerror="this.src='${defaultImageUrl}'">
+        </div>
         <div class="product-details">
             <div class="product-name">${product.name}</div>
-            <div class="product-price">$${product.price.toFixed(2)}</div>
-            <div class="product-description">${product.description}</div>
+            <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+            <div class="product-description">${product.description || ''}</div>
+            <div class="product-stock">Stock: ${product.stock || 0}</div>
+            ${product.category ? `<div class="product-category">Categoría: ${product.category}</div>` : ''}
         </div>
         <div class="product-actions">
             ${isAdmin ? `
                 <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
                 <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
-            ` : `
-                
-            `}
+            ` : ''}
         </div>
     `;
     return card;
@@ -210,51 +220,55 @@ productForm.addEventListener('submit', async (e) => {
     if (!await checkSession()) return;
 
     try {
-        const token = localStorage.getItem('token');
-        const productData = {
-            name: document.getElementById('product-name').value,
-            description: document.getElementById('product-description').value,
-            price: parseFloat(document.getElementById('product-price').value),
-            stock: parseInt(document.getElementById('product-stock').value),
-            category: document.getElementById('product-category').value
-        };
+        const formData = new FormData();
+        
+        // Obtener los valores de los campos
+        const name = document.getElementById('product-name').value;
+        const description = document.getElementById('product-description').value;
+        const price = document.getElementById('product-price').value;
+        const stock = document.getElementById('product-stock').value;
+        const category = document.getElementById('product-category').value;
+        const imageInput = document.getElementById('product-image');
 
-        let url = `${API_URL}/products`;
-        let method = 'POST';
-
-        // Si estamos editando, cambiamos el URL y método
-        if (isEditing && editingProductId) {
-            url = `${API_URL}/products/${editingProductId}`;
-            method = 'PUT';
+        // Validar campos requeridos
+        if (!name || !price) {
+            alert('El nombre y el precio son obligatorios');
+            return;
         }
 
-        const response = await fetch(url, {
-            method: method,
+        // Agregar los campos al FormData
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('stock', stock);
+        formData.append('category', category);
+
+        // Agregar la imagen si existe
+        if (imageInput.files.length > 0) {
+            formData.append('image', imageInput.files[0]);
+        }
+
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/products`, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(productData)
+            body: formData // No incluir 'Content-Type' header, FormData lo establece automáticamente
         });
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                localStorage.clear();
-                showLoginPage();
-                return;
-            }
-            const data = await response.json();
-            throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'add'} product`);
-        }
+        const data = await response.json();
 
-        alert(`Product ${isEditing ? 'updated' : 'added'} successfully`);
-        productForm.reset();
-        isEditing = false;
-        editingProductId = null;
-        await loadProducts('admin');
+        if (response.ok) {
+            alert('Producto agregado exitosamente');
+            productForm.reset();
+            await loadProducts('admin');
+        } else {
+            throw new Error(data.message || 'Error al agregar el producto');
+        }
     } catch (error) {
-        console.error(`Error ${isEditing ? 'updating' : 'adding'} product:`, error);
-        alert(error.message || `An error occurred while ${isEditing ? 'updating' : 'adding'} the product`);
+        console.error('Error adding product:', error);
+        alert(error.message || 'Error al agregar el producto');
     }
 });
 
