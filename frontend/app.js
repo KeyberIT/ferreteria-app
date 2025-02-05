@@ -425,8 +425,23 @@ function removeFromCart(productId) {
 }
 
 function clearCart() {
-    cart = [];
-    updateCart();
+    if (cart.length === 0) {
+        alert('El carrito está vacío');
+        return;
+    }
+
+    // Calcular el total de la compra
+    let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    // Confirmar la compra
+    const confirmar = confirm(`¿Deseas confirmar tu compra por $${total.toFixed(2)}?`);
+    
+    if (confirmar) {
+        const numeroOrden = Math.floor(Math.random() * 1000000);
+        cart = [];
+        updateCart();
+        alert(`¡Compra exitosa!\nNúmero de orden: #${numeroOrden}\nGracias por tu compra.`);
+    }
 }
 
 function updateCart() {
