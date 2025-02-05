@@ -195,30 +195,16 @@ function renderProductCard(product, isAdmin = false) {
             <div class="product-description">${product.description || ''}</div>
             <div class="product-stock">Stock: ${product.stock || 0}</div>
             ${product.category ? `<div class="product-category">Categoría: ${product.category}</div>` : ''}
+            ${!isAdmin ? `
+                <button class="add-to-cart-btn" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-shopping-cart"></i>
+                    Añadir al carrito
+                </button>
+            ` : ''}
         </div>
     `;
 
-    // Añadir botón de añadir al carrito solo para usuarios
-    if (currentUser && currentUser.role === 'user') {
-        productCard.innerHTML = productCardContent + `
-            <div class="product-actions">
-                <button onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">Añadir al Carrito</button>
-            </div>
-        `;
-    } else {
-        productCard.innerHTML = productCardContent;
-    }
-
-    // Agregar botones de editar y eliminar para administradores
-    if (isAdmin) {
-        productCard.innerHTML += `
-            <div class="product-actions">
-                <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
-                <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
-            </div>
-        `;
-    }
-
+    productCard.innerHTML = productCardContent;
     return productCard;
 }
 
