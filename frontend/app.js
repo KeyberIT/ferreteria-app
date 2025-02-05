@@ -214,7 +214,7 @@ function renderAdminProducts(products) {
     });
 }
 
-// Add Product (Admin)
+// Add/Edit Product (Admin)
 productForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!await checkSession()) return;
@@ -249,26 +249,47 @@ productForm.addEventListener('submit', async (e) => {
         }
 
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/products`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData // No incluir 'Content-Type' header, FormData lo establece automáticamente
-        });
+        let response, data;
 
-        const data = await response.json();
+        // Determinar si es una edición o un nuevo producto
+        if (isEditing && editingProductId) {
+            // Editar producto existente
+            response = await fetch(`${API_URL}/products/${editingProductId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+        } else {
+            // Agregar nuevo producto
+            response = await fetch(`${API_URL}/products`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+        }
+
+        data = await response.json();
 
         if (response.ok) {
-            alert('Producto agregado exitosamente');
+            alert(isEditing ? 'Producto actualizado exitosamente' : 'Producto agregado exitosamente');
             productForm.reset();
+            
+            // Resetear estado de edición
+            isEditing = false;
+            editingProductId = null;
+            cancelEditBtn.style.display = 'none';
+
             await loadProducts('admin');
         } else {
-            throw new Error(data.message || 'Error al agregar el producto');
+            throw new Error(data.message || 'Error al procesar el producto');
         }
     } catch (error) {
-        console.error('Error adding product:', error);
-        alert(error.message || 'Error al agregar el producto');
+        console.error('Error processing product:', error);
+        alert(error.message || 'Error al procesar el producto');
     }
 });
 
@@ -306,6 +327,8 @@ window.editProduct = async (productId) => {
         document.getElementById('product-stock').value = product.stock;
         document.getElementById('product-category').value = product.category;
 
+        // Mostrar botón de cancelar edición
+        cancelEditBtn.style.display = 'block';
     } catch (error) {
         console.error('Error fetching product:', error);
         alert(error.message || 'An error occurred while fetching the product');
