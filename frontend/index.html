@@ -11,14 +11,20 @@
 <body>
     <div id="login-section" class="section">
         <div class="login-container">
+            <div class="logo">
+                <i class="fas fa-tools"></i>
+                <h1>Ferretería Online</h1>
+            </div>
             <form id="login-form" class="auth-form">
                 <h2>Iniciar Sesión</h2>
                 <div class="login-type">
                     <label>
-                        <input type="radio" name="login-type" value="user" checked> Usuario
+                        <input type="radio" name="login-type" value="user" checked>
+                        <span>Usuario</span>
                     </label>
                     <label>
-                        <input type="radio" name="login-type" value="admin"> Administrador
+                        <input type="radio" name="login-type" value="admin">
+                        <span>Administrador</span>
                     </label>
                 </div>
                 <div class="input-group">
@@ -30,7 +36,7 @@
                     <input type="password" id="login-password" placeholder="Contraseña" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                <p>¿No tienes cuenta? <a href="#" id="show-register" class="link">Regístrate</a></p>
+                <p class="form-footer">¿No tienes cuenta? <a href="#" id="show-register" class="link">Regístrate</a></p>
             </form>
 
             <form id="register-form" class="auth-form" style="display: none;">
@@ -45,10 +51,11 @@
                     <input type="password" id="register-password" placeholder="Contraseña" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Registrarse</button>
-                <p>¿Ya tienes cuenta? <a href="#" id="show-login" class="link">Iniciar Sesión</a></p>
+                <p class="form-footer">¿Ya tienes cuenta? <a href="#" id="show-login" class="link">Iniciar Sesión</a></p>
             </form>
         </div>
     </div>
+
 
     <div id="main-section" class="section" style="display: none;">
         <header>
