@@ -414,3 +414,48 @@ document.getElementById('show-login').addEventListener('click', (e) => {
 
 // Initial load
 fetchProducts();
+
+// Obtener referencia al input de imagen
+const imageInput = document.getElementById('product-image');
+const imagePreview = document.createElement('div');
+imagePreview.id = 'image-preview';
+imagePreview.style.display = 'none';
+imagePreview.style.maxWidth = '100px';
+imagePreview.style.maxHeight = '100px';
+imagePreview.style.margin = '5px 0';
+imagePreview.style.alignSelf = 'center';
+
+const previewImage = document.createElement('img');
+previewImage.style.width = '100%';
+previewImage.style.height = '100%';
+previewImage.style.objectFit = 'cover';
+previewImage.style.borderRadius = '4px';
+
+const previewText = document.createElement('span');
+previewText.textContent = 'Vista previa';
+previewText.style.display = 'block';
+previewText.style.fontSize = '0.8em';
+previewText.style.color = '#666';
+previewText.style.textAlign = 'center';
+previewText.style.marginTop = '5px';
+
+imagePreview.appendChild(previewImage);
+imagePreview.appendChild(previewText);
+imageInput.parentNode.insertBefore(imagePreview, imageInput.nextSibling);
+
+// Agregar evento para vista previa de imagen
+imageInput.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            imagePreview.style.display = 'flex';
+            previewText.textContent = file.name; // Mostrar nombre del archivo
+        };
+        reader.readAsDataURL(file);
+    } else {
+        imagePreview.style.display = 'none';
+        previewText.textContent = 'Vista previa';
+    }
+});
