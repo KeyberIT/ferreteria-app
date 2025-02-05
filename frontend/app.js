@@ -36,14 +36,7 @@ async function fetchProducts() {
         const response = await fetch(`${API_URL}/products`);
         const products = await response.json();
         
-        productsGrid.innerHTML = products.map(product => `
-            <div class="product-card">
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
-                <p>Precio: $${product.price}</p>
-                <p>Stock: ${product.stock}</p>
-            </div>
-        `).join('');
+        renderUserProducts(products);
     } catch (error) {
         console.error('Error fetching products:', error);
     }
@@ -160,37 +153,58 @@ async function loadProducts(role = null) {
         }
 
         const products = await response.json();
-        productList.innerHTML = `
-            <div class="product-grid">
-                ${products.map(product => `
-                    <div class="product-card">
-                        <div class="product-image-placeholder">
-                            <img src="${product.imageUrl || 'default-product-image.png'}" alt="${product.name}">
-                        </div>
-                        <div class="product-details">
-                            <h3>${product.name}</h3>
-                            <p class="product-description">${product.description}</p>
-                            <div class="product-meta">
-                                <span class="product-price">Precio: $${product.price.toFixed(2)}</span>
-                                <span class="product-stock">Stock: ${product.stock}</span>
-                            </div>
-                            ${role === 'admin' ? `
-                                <div class="product-actions">
-                                    <button onclick="editProduct(${product.id})">Editar</button>
-                                    <button onclick="deleteProduct(${product.id})">Eliminar</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-
-        // Mostrar u ocultar el botón de cancelar según el estado de edición
-        cancelEditBtn.style.display = isEditing ? 'block' : 'none';
+        if (role === 'admin') {
+            renderAdminProducts(products);
+        } else {
+            renderUserProducts(products);
+        }
     } catch (error) {
         console.error('Error loading products:', error);
     }
+}
+
+function renderProductCard(product, isAdmin = false) {
+    const card = document.createElement('div');
+    card.classList.add('product-card');
+    card.innerHTML = `
+        <div class="product-image-container">
+            <img src="${product.image || 'placeholder.jpg'}" alt="${product.name}" class="product-image">
+        </div>
+        <div class="product-details">
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <div class="product-description">${product.description}</div>
+        </div>
+        <div class="product-actions">
+            ${isAdmin ? `
+                <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
+                <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
+            ` : `
+                <button class="btn-add-to-cart" onclick="addToCart(${product.id})">Agregar al Carrito</button>
+            `}
+        </div>
+    `;
+    return card;
+}
+
+function renderUserProducts(products) {
+    const productList = document.getElementById('product-list');
+    productList.classList.add('product-grid');
+    productList.innerHTML = '';
+    products.forEach(product => {
+        const productCard = renderProductCard(product);
+        productList.appendChild(productCard);
+    });
+}
+
+function renderAdminProducts(products) {
+    const productList = document.getElementById('product-list');
+    productList.classList.add('product-grid');
+    productList.innerHTML = '';
+    products.forEach(product => {
+        const productCard = renderProductCard(product, true);
+        productList.appendChild(productCard);
+    });
 }
 
 // Add Product (Admin)

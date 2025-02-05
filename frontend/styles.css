@@ -36,93 +36,98 @@ header {
 .product-card {
     background-color: white;
     border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .product-card:hover {
-    transform: scale(1.03);
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-.product-image-placeholder {
+.product-image-container {
     width: 100%;
     height: 250px;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
 }
 
-.product-image-placeholder img {
+.product-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
 }
 
 .product-details {
     padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.product-details h3 {
-    margin-top: 0;
+.product-name {
+    font-size: 1.2em;
+    font-weight: bold;
     margin-bottom: 10px;
     color: #333;
 }
 
+.product-price {
+    font-size: 1.1em;
+    color: #4CAF50;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 .product-description {
     color: #666;
-    margin-bottom: 10px;
-    min-height: 50px;
-}
-
-.product-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.product-price {
-    color: #4CAF50;
-}
-
-.product-stock {
-    color: #2196F3;
+    margin-bottom: 15px;
+    flex-grow: 1;
 }
 
 .product-actions {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
 }
 
-.product-actions button {
-    flex-grow: 1;
-    margin: 0 5px;
-    padding: 8px;
+.btn-add-to-cart, .btn-edit, .btn-delete {
+    padding: 8px 15px;
     border: none;
-    border-radius: 4px;
-    color: white;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.product-actions button:first-child {
+.btn-add-to-cart {
     background-color: #4CAF50;
+    color: white;
 }
 
-.product-actions button:first-child:hover {
-    background-color: #45a049;
+.btn-edit {
+    background-color: #2196F3;
+    color: white;
 }
 
-.product-actions button:last-child {
+.btn-delete {
     background-color: #f44336;
+    color: white;
 }
 
-.product-actions button:last-child:hover {
-    background-color: #d32f2f;
+.btn-add-to-cart:hover, .btn-edit:hover, .btn-delete:hover {
+    opacity: 0.9;
 }
 
 .modal {
