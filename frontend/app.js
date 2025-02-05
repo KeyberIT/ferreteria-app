@@ -5,7 +5,7 @@ let isEditing = false;
 let editingProductId = null;
 
 // DOM Elements
-const productsGrid = document.getElementById('products-grid');
+const productsGrid = document.getElementById('product-list');
 const loginModal = document.getElementById('login-modal');
 const adminModal = document.getElementById('admin-modal');
 const loginBtn = document.getElementById('login-btn');
