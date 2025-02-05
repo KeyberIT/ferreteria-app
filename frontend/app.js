@@ -3,6 +3,7 @@ let token = null;
 let currentUser = null;
 let isEditing = false;
 let editingProductId = null;
+let cart = [];
 
 // DOM Elements
 const productsGrid = document.getElementById('product-list');
@@ -30,6 +31,8 @@ const adminDashboard = document.getElementById('admin-dashboard');
 const loginSection = document.getElementById('login-section');
 const mainSection = document.getElementById('main-section');
 const logoutBtn = document.getElementById('logout-btn');
+const cartItemsContainer = document.getElementById('cart-items');
+const cartTotalElement = document.getElementById('cart-total');
 
 // Fetch Products
 async function fetchProducts() {
@@ -190,6 +193,7 @@ function renderProductCard(product, isAdmin = false) {
                 <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
                 <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
             ` : ''}
+            <button onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">Añadir al Carrito</button>
         </div>
     `;
     return card;
@@ -363,6 +367,61 @@ window.deleteProduct = async (productId) => {
         alert(error.message || 'An error occurred while deleting the product');
     }
 };
+
+// Funcionalidad del Carrito de Compras
+function addToCart(product) {
+    const existingProduct = cart.find(item => item.id === product.id);
+    
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+    
+    updateCart();
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCart();
+}
+
+function clearCart() {
+    cart = [];
+    updateCart();
+}
+
+function updateCart() {
+    // Limpiar el contenedor del carrito
+    cartItemsContainer.innerHTML = '';
+    
+    // Calcular el total
+    const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    
+    // Renderizar los elementos del carrito
+    cart.forEach(item => {
+        const cartItemElement = document.createElement('div');
+        cartItemElement.classList.add('cart-item');
+        cartItemElement.innerHTML = `
+            <div class="cart-item-details">
+                <span>${item.name}</span>
+                <span>$${item.price} x ${item.quantity}</span>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart(${item.id})">Eliminar</button>
+        `;
+        
+        cartItemsContainer.appendChild(cartItemElement);
+    });
+    
+    // Actualizar el total
+    cartTotalElement.textContent = total.toFixed(2);
+}
+
+// Evento para vaciar el carrito
+document.getElementById('clear-cart').addEventListener('click', clearCart);
 
 // Check session on page load
 window.addEventListener('load', async () => {
