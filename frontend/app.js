@@ -13,7 +13,8 @@ const loginForm = document.getElementById('login-form');
 const productForm = document.getElementById('product-form');
 const productList = document.getElementById('product-list');
 const cancelEditBtn = document.createElement('button');
-cancelEditBtn.textContent = 'Cancel Edit';
+cancelEditBtn.textContent = 'Cancelar Edición';
+cancelEditBtn.classList.add('btn', 'btn-secondary', 'cancel-edit-btn');
 cancelEditBtn.style.display = 'none';
 cancelEditBtn.onclick = () => {
     productForm.reset();
@@ -294,7 +295,7 @@ productForm.addEventListener('submit', async (e) => {
 });
 
 // Edit Product (Admin)
-window.editProduct = async (productId) => {
+async function editProduct(productId) {
     if (!await checkSession()) return;
 
     try {
@@ -306,34 +307,28 @@ window.editProduct = async (productId) => {
         });
 
         if (!response.ok) {
-            if (response.status === 401) {
-                localStorage.clear();
-                showLoginPage();
-                return;
-            }
-            throw new Error('Failed to fetch product');
+            throw new Error('Failed to fetch product details');
         }
 
         const product = await response.json();
-        
-        // Marcar que estamos en modo edición
-        isEditing = true;
-        editingProductId = productId;
 
-        // Rellenar el formulario con los datos del producto
+        // Llenar el formulario con los detalles del producto
         document.getElementById('product-name').value = product.name;
         document.getElementById('product-description').value = product.description;
         document.getElementById('product-price').value = product.price;
         document.getElementById('product-stock').value = product.stock;
         document.getElementById('product-category').value = product.category;
 
-        // Mostrar botón de cancelar edición
-        cancelEditBtn.style.display = 'block';
+        isEditing = true;
+        editingProductId = productId;
+
+        // Mostrar el botón de cancelar
+        cancelEditBtn.style.display = 'inline-block';
     } catch (error) {
-        console.error('Error fetching product:', error);
-        alert(error.message || 'An error occurred while fetching the product');
+        console.error('Error editing product:', error);
+        alert('No se pudo cargar el producto para edición');
     }
-};
+}
 
 // Delete Product (Admin)
 window.deleteProduct = async (productId) => {
