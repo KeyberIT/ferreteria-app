@@ -116,7 +116,7 @@ registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('register-username').value;
     const password = document.getElementById('register-password').value;
-    const registerType = document.querySelector('input[name="register-type"]:checked').value;
+    const registerType = document.querySelector('input[name="register-type"]').value;
 
     try {
         const endpoint = registerType === 'admin' ? '/auth/admin/register' : '/auth/user/register';
@@ -125,6 +125,10 @@ registerForm.addEventListener('submit', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
+
+        console.log('Registration details:', { username, registerType });
+        console.log('Register form:', registerForm);
+        console.log('API URL:', `${API_URL}${endpoint}`);
 
         const data = await response.json();
 
