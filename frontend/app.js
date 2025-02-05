@@ -33,6 +33,7 @@ const mainSection = document.getElementById('main-section');
 const logoutBtn = document.getElementById('logout-btn');
 const cartItemsContainer = document.getElementById('cart-items');
 const cartTotalElement = document.getElementById('cart-total');
+const cartContainer = document.getElementById('cart-container');
 
 // Fetch Products
 async function fetchProducts() {
@@ -61,6 +62,7 @@ function showLoginPage() {
     loginSection.style.display = 'block';
     mainSection.style.display = 'none';
     adminDashboard.style.display = 'none';
+    cartContainer.style.display = 'none';
 }
 
 // Función para mostrar la página principal
@@ -68,6 +70,13 @@ function showMainPage(role) {
     loginSection.style.display = 'none';
     mainSection.style.display = 'block';
     adminDashboard.style.display = role === 'admin' ? 'block' : 'none';
+    
+    // Mostrar carrito solo para usuarios normales
+    if (currentUser && currentUser.role === 'user') {
+        cartContainer.style.display = 'block';
+    } else {
+        cartContainer.style.display = 'none';
+    }
 }
 
 // User Login
@@ -168,18 +177,17 @@ async function loadProducts(role = null) {
 }
 
 function renderProductCard(product, isAdmin = false) {
-    const card = document.createElement('div');
-    card.classList.add('product-card');
-    
-    // URL base para las imágenes
     const baseUrl = 'http://localhost:3000'; // Ajusta esto según tu configuración
     const defaultImageUrl = '/default-product.jpg'; // Imagen por defecto
+
+    const productCard = document.createElement('div');
+    productCard.classList.add('product-card');
     
-    card.innerHTML = `
+    // Contenido base del producto
+    const productCardContent = `
         <div class="product-image">
             <img src="${product.imageUrl ? baseUrl + product.imageUrl : defaultImageUrl}" 
-                 alt="${product.name}"
-                 onerror="this.src='${defaultImageUrl}'">
+                 alt="${product.name}">
         </div>
         <div class="product-details">
             <div class="product-name">${product.name}</div>
@@ -188,12 +196,53 @@ function renderProductCard(product, isAdmin = false) {
             <div class="product-stock">Stock: ${product.stock || 0}</div>
             ${product.category ? `<div class="product-category">Categoría: ${product.category}</div>` : ''}
         </div>
-        <div class="product-actions">
-            ${isAdmin ? `
+    `;
+
+    // Añadir botón de añadir al carrito solo para usuarios
+    if (currentUser && currentUser.role === 'user') {
+        productCard.innerHTML = productCardContent + `
+            <div class="product-actions">
+                <button onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">Añadir al Carrito</button>
+            </div>
+        `;
+    } else {
+        productCard.innerHTML = productCardContent;
+    }
+
+    // Agregar botones de editar y eliminar para administradores
+    if (isAdmin) {
+        productCard.innerHTML += `
+            <div class="product-actions">
                 <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
                 <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
-            ` : ''}
-            <button onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">Añadir al Carrito</button>
+            </div>
+        `;
+    }
+
+    return productCard;
+}
+
+function renderAdminProductCard(product) {
+    const baseUrl = 'http://localhost:3000'; // Ajusta esto según tu configuración
+    const defaultImageUrl = '/default-product.jpg'; // Imagen por defecto
+
+    const card = document.createElement('div');
+    card.classList.add('admin-product-card');
+    card.innerHTML = `
+        <div class="product-image">
+            <img src="${product.imageUrl ? baseUrl + product.imageUrl : defaultImageUrl}" 
+                 alt="${product.name}">
+        </div>
+        <div class="product-details">
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+            <div class="product-description">${product.description || ''}</div>
+            <div class="product-stock">Stock: ${product.stock || 0}</div>
+            ${product.category ? `<div class="product-category">Categoría: ${product.category}</div>` : ''}
+            <div class="product-actions">
+                <button class="btn-edit" onclick="editProduct(${product.id})">Editar</button>
+                <button class="btn-delete" onclick="deleteProduct(${product.id})">Eliminar</button>
+            </div>
         </div>
     `;
     return card;
@@ -214,7 +263,7 @@ function renderAdminProducts(products) {
     productList.classList.add('product-grid');
     productList.innerHTML = '';
     products.forEach(product => {
-        const productCard = renderProductCard(product, true);
+        const productCard = renderAdminProductCard(product);
         productList.appendChild(productCard);
     });
 }
@@ -423,6 +472,15 @@ function updateCart() {
 // Evento para vaciar el carrito
 document.getElementById('clear-cart').addEventListener('click', clearCart);
 
+// Función para manejar la visibilidad del carrito
+function updateCartVisibility() {
+    if (currentUser && currentUser.role === 'user') {
+        cartContainer.style.display = 'block';
+    } else {
+        cartContainer.style.display = 'none';
+    }
+}
+
 // Check session on page load
 window.addEventListener('load', async () => {
     const token = localStorage.getItem('token');
@@ -513,3 +571,6 @@ imageInput.addEventListener('change', function(event) {
         previewText.textContent = 'Vista previa';
     }
 });
+
+// Inicialmente ocultar el carrito
+cartContainer.style.display = 'none';
